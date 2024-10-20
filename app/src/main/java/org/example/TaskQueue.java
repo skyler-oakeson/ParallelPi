@@ -37,4 +37,8 @@ public class TaskQueue {
       rl.unlock();
     }
   }
+
+  public Integer size() {
+    return queue.size();
+  }
 }

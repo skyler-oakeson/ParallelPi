@@ -34,6 +34,6 @@ public class App {
     long end = System.currentTimeMillis();
 
     System.out.println(rt);
-    System.out.printf("Elapsed Time: %d Seconds", (end - start));
+    System.out.printf("Elapsed Time: %d Milliseconds", (end - start));
   }
 }

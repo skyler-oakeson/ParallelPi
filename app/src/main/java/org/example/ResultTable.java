@@ -21,6 +21,7 @@ public class ResultTable {
     for (int key = 1; key <= table.size(); key++) {
       res += table.get(key);
     }
+    res += "\n";
     return res;
   }
 }

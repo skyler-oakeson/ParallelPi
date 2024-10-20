@@ -17,6 +17,14 @@ public class DigitWorker extends Thread {
     while ((digit = tq.pop()) != null) {
       Integer decimal = bpp.getDecimal(digit);
       rt.addResult(digit, decimal);
+
+      synchronized(System.out) {
+        if (tq.size() % 10 == 0) {
+          System.out.print("\033[1F\33[K");
+          System.out.printf("Progress: %d%%\n", 100 - (tq.size() / 10));
+          System.out.flush();
+        }
+      }
     }
   }
 }
