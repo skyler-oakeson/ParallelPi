@@ -1,28 +1,39 @@
 package org.example;
 
+import java.util.ArrayList;
+
 public class App {
   public static void main(String[] args) {
-    final long INCREMENT = 1_000;
-    try {
-      Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
-      long start = 1;
-      long end = INCREMENT;
+    long start = System.currentTimeMillis();
+    TaskQueue tq = new TaskQueue();
+    ResultTable rt = new ResultTable();
+    Bpp bpp = new Bpp();
 
-      long timeStart = System.currentTimeMillis();
-      for (int thread = 0; thread < Runtime.getRuntime().availableProcessors(); thread++) {
-        threads[thread] = new Thread(); // insert pi function here
-        threads[thread].start();
-        start += INCREMENT;
-        end += INCREMENT;
-      }
-
-      for (Thread t : threads) {
-        t.join();
-      }
-        long timeEnd = System.currentTimeMillis();
-        System.out.printf("The execution time in seconds was: %.3f\n", (timeEnd - timeStart) / 1000.0);
-    } catch (Exception ex) {
-      System.out.println("Something bad happened");
+    ArrayList<Integer> tasks = new ArrayList<Integer>();
+    for (int digit = 1; digit <= 1000; digit++) {
+      tasks.add(digit);
     }
+    java.util.Collections.shuffle(tasks);
+    tq.add(tasks);
+
+    Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
+    for (int id = 0; id < Runtime.getRuntime().availableProcessors(); id++) {
+      threads[id] = new DigitWorker(tq, rt, bpp);
+      threads[id].start();
+    }
+
+    for (Thread thread: threads) {
+      try {
+        thread.join();
+      } catch (InterruptedException e) {
+        thread.interrupt();
+        System.out.println("Failed to calculate pi.");
+      }
+    }
+
+    long end = System.currentTimeMillis();
+
+    System.out.println(rt);
+    System.out.printf("Elapsed Time: %d Seconds", (end - start));
   }
 }
